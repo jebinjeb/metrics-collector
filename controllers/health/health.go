@@ -6,6 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Health(c *gin.Context){
-	c.String(http.StatusOK, format:"ok")
+func Health(c *gin.Context) {
+	c.String(http.StatusOK, "ok")
 }

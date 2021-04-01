@@ -6,6 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func metrics(c *gin.Context){
-	c.String(http.StatusOK, format:"ok")
+func Metrics(c *gin.Context) {
+	c.String(http.StatusOK, "ok")
 }
