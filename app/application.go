@@ -16,4 +16,5 @@ func StartApplication() {
 
 func mapUrls() {
 	router.GET("/health", health.Health)
+	router.GET("/metrics", metrics.Metrics)
 }
