@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: image-verify
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: image-verify
+        image: jebinj/cosign:latest
+        env:
+        - name: IMAGE
+          value: "registry.gitlab.com/soi-beta/external-images/velero:v1.7.0"
+        - name: GITLAB_URL
+          value: registry.gitlab.com 
+        - name: USER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-credentials
+              key: name
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-credentials
+              key: password
+        volumeMounts:
+          - name: image-verify-cm
+            mountPath: /tmp
+          - name: public-key
+            mountPath: /tmp/key
+        command: ["bash", "/tmp/image_verify.sh"]
+      restartPolicy: Never
+      volumes:
+      - name: image-verify-cm
+        configMap:
+          name: imageverify-cm
+      - name: public-key
+        secret:
+          secretName: public-key
+          items:
+          - key: key
+            path: cosign.pub 
+  backoffLimit: 4
